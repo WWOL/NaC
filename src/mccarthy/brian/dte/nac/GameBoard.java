@@ -46,7 +46,7 @@ public class GameBoard {
 		gamesDrawn = 0;
 		props = new Properties();
 		// The default logic, can be changed later from props of game
-		//logic = new GameLogic2();
+		logic = new GameLogic2();
 		// Start with players turn
 		playersTurn = true;
 		autoTurn = false;
@@ -219,36 +219,36 @@ public class GameBoard {
 			return;
 		}
 		try {
-			gamesPlayed = Integer.parseInt(props.getProperty("gamesPlayed"));
-			gamesWon = Integer.parseInt(props.getProperty("gamesWon"));
-			gamesDrawn = Integer.parseInt(props.getProperty("gamesDrawn"));
+			gamesPlayed = Integer.parseInt(props.getProperty("gamesPlayed", "0"));
+			gamesWon = Integer.parseInt(props.getProperty("gamesWon", "0"));
+			gamesDrawn = Integer.parseInt(props.getProperty("gamesDrawn", "0"));
 			autoTurn = Boolean.parseBoolean(props.getProperty("autoTurn", "false"));
-			String[] logics = props.getProperty("logicList", "mccarthy.brian.dte.nac.GameLogic1,mccarthy.brian.dte.nac.GameLogic2").split(",");
-			String selectedLogic = props.getProperty("logic", "mccarthy.brian.dte.nac.GameLogic1");
-			for (String logicName : logics) {
-				try {
-					Class<?> c = GameRunner.getPluginLoader().loadClass(logicName);
-					GameLogic instance = (GameLogic) c.newInstance();
-					logicList.add(instance);
-					if (logicName.equals(selectedLogic)) {
-						logic = instance;
-					}
-				} catch (Exception e) {
-					System.out.println("Error while loading logic class: " + logicName);
-				}
+			String selectedLogic = props.getProperty("logic", "GameLogic2");
+			System.out.println("sL: " + selectedLogic);
+			logicList.add(new GameLogic1());
+			logicList.add(new GameLogic2());
+			logicList.add(new GameLogicError()); // Not really needed.
+			for (GameLogic logicName : logicList) {
+			    if (logicName.getId().equals(selectedLogic)) {
+			        System.out.println("lN: " + logicName);
+			        logic = logicName;
+			    }
 			}
 			if (logic == null) {
-				System.out.println();
+				System.out.println("Error loading game logic!");
 				logic = new GameLogicError();
 			}
+			System.out.println("l: " + logic);
 		} catch (Exception e) {
 			System.out.println("Error while loading data!");
 			e.printStackTrace();
 		}
+		System.out.println("lL: " + logic);
 	}
 
 	/**
 	 * Get the board in a string representation
+	 * This was mainly used in debugging
 	 * @return String with ' ' represented by '*'
 	 */
 	@Override
@@ -263,13 +263,17 @@ public class GameBoard {
 		return sb.toString();
 	}
 	
-	public GameLogic getGameLogicByName(String name) {
+	public GameLogic getGameLogicById(String id) {
 		for (GameLogic logic : logicList) {
-			if (logic.getHumanName().equals(name)) {
+			if (logic.getId().equals(id)) {
 				return logic;
 			}
 		}
 		return null;
+	}
+	
+	public GameLogic getLogic() {
+	    return logic;
 	}
 	
 	public int getGamesPlayed() {
@@ -282,13 +286,6 @@ public class GameBoard {
 
 	public int getGamesDrawn() {
 		return gamesDrawn;
-	}
-	
-	public String getLogicHumanName() {
-		if (logic == null) {
-			return "** UNKNOWN **";
-		}
-		return logic.getHumanName();
 	}
 	
 	public boolean isPlayersTurn() {
@@ -314,9 +311,10 @@ public class GameBoard {
 	}
 	
 	public void setLogicType(String id) {
+	    System.out.println("Changing logic to " + id);
 		for (GameLogic logic : logicList) {
 			if (logic.getId().equals(id)) {
-				System.out.println("Changed from logic " + this.logic.getHumanName() + " to " + logic.getHumanName());
+				System.out.println("Changed from logic " + this.logic.getId() + " to " + logic.getId());
 				this.logic = logic;
 			}
 		}
@@ -336,7 +334,7 @@ public class GameBoard {
 	}
 	
 	public List<GameLogic> getLogicList() {
-		return logicList;
+	    return logicList;
 	}
 
 }

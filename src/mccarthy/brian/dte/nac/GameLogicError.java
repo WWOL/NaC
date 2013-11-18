@@ -16,13 +16,8 @@ public class GameLogicError extends GameLogic {
 	}
 
 	@Override
-	public String getHumanName() {
-		return "GameLogic Error!";
-	}
-
-	@Override
 	public String getId() {
 		return "Native_Error";
 	}
-
+	
 }

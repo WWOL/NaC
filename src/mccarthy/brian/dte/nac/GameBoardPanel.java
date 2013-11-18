@@ -24,7 +24,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, WindowListe
 	
 	protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        Graphics2D g2 = (Graphics2D)graphics;
+        Graphics2D g2 = (Graphics2D) graphics;
         g2.setStroke(new BasicStroke(3));
         g2.setColor(Color.RED);
         for (int i = 0; i < 9; i++) {
@@ -45,6 +45,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, WindowListe
         	}
         }
         g2.setPaint(Color.BLUE);
+        // Draw the grid
         g2.drawLine(0, 200, 600, 200);
 		g2.drawLine(0, 400, 600, 400);
         g2.drawLine(200, 0, 200, 600);
@@ -90,13 +91,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, WindowListe
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (!GameRunner.getGameBoard().isPlayersTurn()) {
-			
 			return;
 		}
 		int xCol = e.getX() / 200;
 		int yCol = e.getY() / 200;
-		//System.out.println("x: " + e.getX() + ", y: " + e.getY());
-		//System.out.println("xCol: " + xCol + ", yCol: " + yCol);
 		int index = indexFromColumns(xCol, yCol);
 		char piece = GameRunner.getGameBoard().getPieceAt(index);
 		if (piece != ' ') {
@@ -108,6 +106,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, WindowListe
 		GameRunner.getGameBoard().checkForWin();
 		if(GameRunner.getGameBoard().isAutoTurn()) {
 			GameRunner.getGameBoard().placeComputerPiece();
+			// The board has changed, make sure we check for a win
+			GameRunner.getGameBoard().checkForWin();
 		}
 	}
 	

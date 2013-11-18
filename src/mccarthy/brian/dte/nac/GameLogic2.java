@@ -88,11 +88,6 @@ public class GameLogic2 extends GameLogic {
 		fallback.placeComputerPiece();
 	}
 
-	@Override
-	public String getHumanName() {
-		return "Game Logic Type 2";
-	}
-
 	public int count(char piece, String line) {
 		int count = 0;
 		for (int i = 0; i < line.length(); i++) {
@@ -109,8 +104,4 @@ public class GameLogic2 extends GameLogic {
 		return "Native_2";
 	}
 	
-	public String toString() {
-		return getHumanName();
-	}
-
 }

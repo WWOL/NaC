@@ -1,6 +1,8 @@
 package mccarthy.brian.dte.nac;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -21,35 +23,15 @@ public class GameRunner {
 	 * This is a static class variable because we need it to repaint the
 	 * window when a piece has been placed
 	 */
-	//private static JFrame f;
 	private static GameBoardPanel gameBoardPanel;
-
-	/**
-	 * This custom class loader lets us load plugins from the logic dir
-	 */
-	private static PluginClassLoader pluginLoader;
 	
 	/**
 	 * This is the entry point for the application
 	 */
-	public static void main(String[] args) {
-		try {
-			pluginLoader = new PluginClassLoader(new File("logic" + File.separator));
-			Class<?> c = pluginLoader.loadClass("mccarthy.brian.dte.nac.GameLogic3", true);
-			System.out.println("C: " + c + ", " + c.getClassLoader() + "===\n\n===");
-			Class<?> c2 = pluginLoader.loadClass("mccarthy.brian.dte.nac.GameLogic3", true);
-			System.out.println("C: " + c2 + ", " + c.getClassLoader() + "===\n\n===");
-			//Thread.currentThread().setContextClassLoader(pluginLoader);
-			//Class.forName("mccarthy.brian.dte.nac.GameLogic3");
-			//return;
-		} catch (Exception e) {
-			System.out.println("BROKE");
-			e.printStackTrace();
-			System.exit(-1);
-		}
+	public static void main(String[] args) {		
+	    createDataFile();
+	    board = new GameBoard();
 		
-		board = new GameBoard();
-		createDataFile();
 
 		JFrame f = new JFrame();
 		gameBoardPanel = new GameBoardPanel();
@@ -86,6 +68,14 @@ public class GameRunner {
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+				writer.newLine();
+				writer.write("logic=Native_2");
+				writer.newLine();
+				writer.write("autoTurn=false");
+                writer.newLine();
+				writer.flush();
+				writer.close();
 			} catch (Exception e) {
 				System.out.println("Error creating the scores file!\nYou will not be able to save scores.");
 				e.printStackTrace();
@@ -115,6 +105,12 @@ public class GameRunner {
 		sb.append(" Welcome to Noughts and Crosses!\n");
 		sb.append(" Thank you for flying Brian McCarthy Programmers.\n");
 		sb.append(" We hope you enjoy your flight!\n\n");
+		sb.append("Operation:\n");
+		sb.append(" Click in a square to place you piece.\n");
+		sb.append(" Click Step to make to computer take their turn.\n\n");
+		sb.append("Data.txt:\n");
+		sb.append(" Set autoTurn to true in the data.txt file to make the computer take their turn automatically,\n");
+		sb.append(" Set logic to one of the options in the selector to change the default logic.\n\n");
 		return sb.toString();
 	}
 
@@ -172,10 +168,6 @@ public class GameRunner {
 		getGameBoard().save();
 		System.out.println("Exiting...");
 		System.exit(0);
-	}
-	
-	public static PluginClassLoader getPluginLoader() {
-		return pluginLoader;
 	}
 
 }

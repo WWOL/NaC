@@ -9,8 +9,6 @@ public abstract class GameLogic {
 
 	public abstract void placeComputerPiece();
 	
-	public abstract String getHumanName();
-	
 	/**
 	 * This should return a unique string for each logic type.
 	 * @return id
@@ -18,7 +16,7 @@ public abstract class GameLogic {
 	public abstract String getId();
 	
 	public String toString() {
-		return getHumanName();
+		return getId();
 	}
 	
 	public boolean equals(Object o) {

@@ -23,15 +23,8 @@ public class GameLogic1 extends GameLogic {
 	}
 
 	@Override
-	public String getHumanName() {
-		return "Game Logic Type 1";
-	}
-
-	@Override
 	public String getId() {
 		return "Native_1";
 	}
-	
-	
 
 }
